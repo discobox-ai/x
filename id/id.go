@@ -35,6 +35,9 @@ const (
 	// PrefixPoolAgentBoot identifies one run of a pool agent process, so state
 	// reports carry a boot identity their sequence numbers are scoped to.
 	PrefixPoolAgentBoot = "boot"
+	// PrefixCredentialVerdict identifies one recorded judge decision about an
+	// agent credential use.
+	PrefixCredentialVerdict = "cvd"
 )
 
 // RandomLength is the length of the random portion of a generated ID.
