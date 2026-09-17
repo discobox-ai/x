@@ -151,6 +151,11 @@ func TestNormalizeID(t *testing.T) {
 		{"90-review-lint.sh", "review-lint"},
 		{"go-lsp.sh", "go-lsp"},
 		{"Some Hook.MD", "some-hook"},
+		{"10-desktop.yaml", "desktop"},
+		{"vscode.yml", "vscode"},
+		{"20-open.ps1", "open"},
+		{"30-open.cmd", "open"},
+		{"open.BAT", "open"},
 		{"check-1.2", "check-1-2"},
 		{"...", ""},
 	} {

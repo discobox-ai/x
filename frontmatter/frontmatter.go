@@ -39,10 +39,11 @@ const (
 // file named `check-1.2` must not become `check-1`: only extensions that are
 // plausibly a language or document suffix are removed.
 var idExtensions = map[string]struct{}{
-	".sh": {}, ".bash": {}, ".zsh": {}, ".fish": {},
+	".sh": {}, ".bash": {}, ".zsh": {}, ".fish": {}, ".ps1": {}, ".cmd": {}, ".bat": {},
 	".py": {}, ".rb": {}, ".pl": {},
 	".js": {}, ".mjs": {}, ".cjs": {}, ".ts": {},
 	".md": {}, ".markdown": {}, ".txt": {},
+	".yaml": {}, ".yml": {},
 }
 
 var (
