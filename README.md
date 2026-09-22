@@ -5,6 +5,7 @@ Discobox itself; each package stands alone and is useful outside it.
 
 | Package | What it is |
 | --- | --- |
+| [`config`](config) | A server's configuration from one file plus environment overrides: the Config struct is the source of truth, env names derive from key paths (`<PREFIX>_<KEY_PATH>`), unknown keys and misspelled variables fail, secrets accept `file:<path>`, and it generates the JSON schema and commented example file. |
 | [`gormdb`](gormdb) | GORM connection pools for SQLite, Postgres, and Turso, opened from a DSN. SQLite gets the split write/read pool that WAL wants: one writer with `_txlock=immediate`, many readers with `mode=ro`. |
 | [`frontmatter`](frontmatter) | A script with a YAML metadata block at the top, delimited by `---`, `#---` or `//---`, and a stable id derived from its filename. Normalizes key spelling and value shape; what the fields mean is the reader's. |
 | [`gitutil`](gitutil) | Running `git` as a subprocess and reading what it says — repository roots, status, refs. |
