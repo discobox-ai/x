@@ -4,6 +4,10 @@
 // underscore, and 16 random lowercase Crockford base32 characters (80 bits of
 // entropy). The prefix makes IDs recognizable on sight and keeps tab
 // completion useful; creation time lives in CreatedAt columns, not in the ID.
+//
+// The underscore cannot appear everywhere an ID is written: a hostname (RFC
+// 1123) allows only letters, digits and hyphens. [Hostname] spells an ID with a
+// hyphen for those places, and [Canonical] reads that spelling back.
 package id
 
 import (
@@ -93,6 +97,33 @@ func RandomPart(id string) string {
 		return id[sep+1:]
 	}
 	return id
+}
+
+// Hostname returns id spelled with a hyphen where its prefix separator is —
+// "sbx-0123456789abcdef" for "sbx_0123456789abcdef" — the form an ID takes
+// where an underscore is not allowed, such as a hostname. A value with no
+// prefix separator is returned unchanged.
+func Hostname(id string) string {
+	return strings.Replace(id, "_", "-", 1)
+}
+
+// Canonical returns value with a hyphen after prefix read as the prefix
+// separator: "sbx-dfzx" becomes "sbx_dfzx", so an ID copied from where it is
+// spelled with a hyphen ([Hostname]) resolves like the ID it is. The rewrite
+// applies only when everything after "<prefix>-" is a full or short random part
+// — at most RandomLength alphabet characters — so a name that merely begins
+// with the prefix and a hyphen is returned unchanged, as is anything else.
+func Canonical(prefix, value string) string {
+	rest, ok := strings.CutPrefix(value, prefix+"-")
+	if !ok || prefix == "" || rest == "" || len(rest) > RandomLength {
+		return value
+	}
+	for i := 0; i < len(rest); i++ {
+		if strings.IndexByte(alphabet, rest[i]) < 0 {
+			return value
+		}
+	}
+	return prefix + "_" + rest
 }
 
 // ResolveShort returns the candidates a short ID selects. An exact match wins

@@ -61,6 +61,46 @@ func TestRandomPart(t *testing.T) {
 	}
 }
 
+func TestHostname(t *testing.T) {
+	for value, want := range map[string]string{
+		"sbx_0123456789abcdef": "sbx-0123456789abcdef",
+		"user_default":         "user-default",
+		"noprefix":             "noprefix",
+	} {
+		if got := Hostname(value); got != want {
+			t.Errorf("Hostname(%q) = %q, want %q", value, got, want)
+		}
+	}
+}
+
+func TestCanonical(t *testing.T) {
+	for _, tc := range []struct {
+		value, want string
+	}{
+		{value: "sbx-0123456789abcdef", want: "sbx_0123456789abcdef"},
+		{value: "sbx-dfzx", want: "sbx_dfzx"},
+		{value: "sbx_0123456789abcdef", want: "sbx_0123456789abcdef"},
+		// Not a random part: a name, too long, or outside the alphabet.
+		{value: "sbx-my-box", want: "sbx-my-box"},
+		{value: "sbx-0123456789abcdefg", want: "sbx-0123456789abcdefg"},
+		{value: "sbx-DFZX", want: "sbx-DFZX"},
+		{value: "sbx-", want: "sbx-"},
+		{value: "run-0123456789abcdef", want: "run-0123456789abcdef"},
+		{value: "dfzx", want: "dfzx"},
+	} {
+		if got := Canonical(PrefixSandbox, tc.value); got != tc.want {
+			t.Errorf("Canonical(%q, %q) = %q, want %q", PrefixSandbox, tc.value, got, tc.want)
+		}
+	}
+	if got := Canonical("", "-dfzx"); got != "-dfzx" {
+		t.Errorf("Canonical with no prefix = %q, want it unchanged", got)
+	}
+	id := NewString(PrefixSandbox)
+	if got := Canonical(PrefixSandbox, Hostname(id)); got != id {
+		t.Errorf("Canonical(Hostname(%q)) = %q", id, got)
+	}
+}
+
 func TestResolveShort(t *testing.T) {
 	candidates := []string{"sbx_dfzx0123456789ab", "sbx_dfzx0123456789cd", "sbx_qqqq0123456789ef", "user_default"}
 
